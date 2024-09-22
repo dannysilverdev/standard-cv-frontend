@@ -37,6 +37,9 @@
     ]
   },
   "devDependencies": {
-    "serverless-finch": "^4.0.4"
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "serverless-finch": "^4.0.4",
+    "tailwindcss": "^3.4.12"
   }
 }

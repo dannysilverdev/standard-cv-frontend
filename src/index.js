@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';  // Puedes usar o eliminar el archivo de estilos
+import './index.css';  // Importar Tailwind CSS
 import App from './App';
 
 ReactDOM.render(

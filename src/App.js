@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';  // Importa Axios
+import LoadingSpinner from './components/LoadingSpinner'; // Importa el componente del spinner
 
 function App() {
   const [users, setUsers] = useState([]);  // Estado para almacenar la lista de usuarios
@@ -29,7 +30,8 @@ function App() {
 
   // Si está cargando, mostrar mensaje de carga
   if (loading) {
-    return <p>Cargando usuarios...</p>;
+    // Mostrar el spinner mientras los datos se están cargando
+    return <LoadingSpinner />;
   }
 
   // Si hay un error, mostrar el mensaje de error
@@ -39,19 +41,30 @@ function App() {
 
   // Si hay usuarios, mostrarlos en una lista
   return (
-    <div>
-      <h1>Lista de Usuarios</h1>
-      {users.length > 0 ? (
-        <ul>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="container mx-auto">
+        <h1 className="text-4xl font-bold mb-8 text-center text-gray-900">Lista de Usuarios</h1>
+        <div className="grid gap-6 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
           {users.map((user, index) => (
-            <li key={index}>
-              <strong>{user.name}</strong> - {user.email}
-            </li>
+            <div
+              key={index}
+              className="bg-white p-6 rounded-lg shadow-lg transform transition duration-500 hover:scale-105"
+            >
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">{user.name}</h2>
+              <p className="text-gray-700 mb-2">Email: {user.email}</p>
+              <p className="text-gray-600">Teléfono: {user.phone}</p>
+              <a
+                href={user.links.linkedin}
+                className="text-blue-500 mt-4 inline-block"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                LinkedIn
+              </a>
+            </div>
           ))}
-        </ul>
-      ) : (
-        <p>No se encontraron usuarios.</p>
-      )}
+        </div>
+      </div>
     </div>
   );
 }
