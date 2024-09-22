@@ -1,0 +1,36 @@
+service: standard-cv-frontend
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+
+plugins:
+  - serverless-finch
+
+custom:
+  client:
+    bucketName: standard-cv-frontend  # Cambia a un nombre único para tu bucket S3
+    distributionFolder: build  # Carpeta donde React genera el build
+    distributionIdKey: E3TZ7FZ63RTYJO # Reemplaza con el ID de la distribución de CloudFront si ya tienes uno
+    acl: public-read
+
+resources:
+  Resources:
+    StaticWebsiteBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: standard-cv-frontend
+        AccessControl: PublicRead
+
+    CloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Origins:
+            - DomainName: !GetAtt StaticWebsiteBucket.DomainName
+              Id: S3-StaticWebsite
+              S3OriginConfig:
+                OriginAccessIdentity: ""
+          Enabled: true
+          DefaultRootObject: index.html

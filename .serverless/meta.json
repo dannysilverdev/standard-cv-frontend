@@ -1,0 +1,112 @@
+{
+  "/home/dannysilver/standard-cv/frontend": {
+    "versionSfCore": null,
+    "versionFramework": "4.4.0",
+    "isWithinCompose": false,
+    "isCompose": false,
+    "composeOrgName": null,
+    "composeResolverProviders": {
+      "default-aws-credential-resolver": "<REDACTED>"
+    },
+    "composeServiceName": null,
+    "servicePath": "/home/dannysilver/standard-cv/frontend",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "service": "standard-cv-frontend",
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs18.x",
+        "region": "us-east-1",
+        "stage": "dev",
+        "versionFunctions": true
+      },
+      "plugins": [
+        "serverless-finch"
+      ],
+      "custom": {
+        "client": {
+          "bucketName": "standard-cv-frontend",
+          "distributionFolder": "build",
+          "distributionIdKey": "E3TZ7FZ63RTYJO",
+          "acl": "public-read"
+        }
+      },
+      "resources": {
+        "Resources": {
+          "StaticWebsiteBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketName": "standard-cv-frontend",
+              "AccessControl": "PublicRead"
+            }
+          },
+          "CloudFrontDistribution": {
+            "Type": "AWS::CloudFront::Distribution",
+            "Properties": {
+              "DistributionConfig": {
+                "Origins": [
+                  {
+                    "DomainName": {
+                      "Fn::GetAtt": [
+                        "StaticWebsiteBucket",
+                        "DomainName"
+                      ]
+                    },
+                    "Id": "S3-StaticWebsite",
+                    "S3OriginConfig": {
+                      "OriginAccessIdentity": ""
+                    }
+                  }
+                ],
+                "Enabled": true,
+                "DefaultRootObject": "index.html"
+              }
+            }
+          }
+        }
+      }
+    },
+    "serviceRawFile": "service: standard-cv-frontend\n\nprovider:\n  name: aws\n  runtime: nodejs18.x\n  region: us-east-1\n\nplugins:\n  - serverless-finch\n\ncustom:\n  client:\n    bucketName: standard-cv-frontend  # Cambia a un nombre único para tu bucket S3\n    distributionFolder: build  # Carpeta donde React genera el build\n    distributionIdKey: E3TZ7FZ63RTYJO # Reemplaza con el ID de la distribución de CloudFront si ya tienes uno\n    acl: public-read\n\nresources:\n  Resources:\n    StaticWebsiteBucket:\n      Type: AWS::S3::Bucket\n      Properties:\n        BucketName: standard-cv-frontend\n        AccessControl: PublicRead\n\n    CloudFrontDistribution:\n      Type: AWS::CloudFront::Distribution\n      Properties:\n        DistributionConfig:\n          Origins:\n            - DomainName: !GetAtt StaticWebsiteBucket.DomainName\n              Id: S3-StaticWebsite\n              S3OriginConfig:\n                OriginAccessIdentity: \"\"\n          Enabled: true\n          DefaultRootObject: index.html\n",
+    "command": [
+      "client",
+      "deploy"
+    ],
+    "options": {
+      "confirm": false
+    },
+    "error": null,
+    "params": {},
+    "machineId": "5c7da72b364f8d36e169624a142f4d67",
+    "stage": "dev",
+    "accessKeyV2": "<REDACTED>",
+    "accessKeyV1": "<REDACTED>",
+    "orgId": "1ee2549d-83b0-4d00-8d75-131197886d4c",
+    "orgName": "dannysilver",
+    "userId": "yfgVk0qPB0mWlwGhCF",
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "userName": "dannysilver",
+    "subscription": null,
+    "userEmail": "dannysilvercross@gmail.com",
+    "serviceProviderAwsRegion": "us-east-1",
+    "serviceProviderAwsCredentials": "<REDACTED>",
+    "serviceProviderAwsAccountId": "207567761860",
+    "projectType": "traditional",
+    "versionSf": "4.4.0",
+    "serviceProviderAwsCfStackName": "standard-cv-frontend-dev",
+    "integrations": {},
+    "serviceUniqueId": null,
+    "serviceProviderAwsCfStackId": null,
+    "serviceProviderAwsCfStackCreated": null,
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": null,
+    "serviceProviderAwsCfStackOutputs": null
+  }
+}
