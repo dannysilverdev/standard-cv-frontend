@@ -10,10 +10,12 @@ plugins:
 
 custom:
   client:
-    bucketName: standard-cv-frontend  # Cambia a un nombre único para tu bucket S3
-    distributionFolder: build  # Carpeta donde React genera el build
-    distributionIdKey: E3TZ7FZ63RTYJO # Reemplaza con el ID de la distribución de CloudFront si ya tienes uno
-    acl: public-read
+    bucketName: standard-cv-frontend  # Cambia al nombre de tu bucket S3
+    distributionFolder: dist  # Carpeta donde Vite genera el build
+    region: us-east-1  # Asegúrate de que la región esté definida
+    distributionIdKey: EEU042QWEANA9  # Si usas CloudFront
+    acl: public-read  # Puedes descomentar si necesitas ACLs
+
 
 resources:
   Resources:
@@ -21,7 +23,11 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: standard-cv-frontend
-        AccessControl: PublicRead
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+          BlockPublicPolicy: false
+          IgnorePublicAcls: false
+          RestrictPublicBuckets: false
 
     CloudFrontDistribution:
       Type: AWS::CloudFront::Distribution
@@ -34,3 +40,28 @@ resources:
                 OriginAccessIdentity: ""
           Enabled: true
           DefaultRootObject: index.html
+          DefaultCacheBehavior:
+            TargetOriginId: S3-StaticWebsite
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - GET
+              - HEAD
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+                Forward: none
+            MinTTL: 3600  # Tiempo mínimo de caché (ajusta si lo necesitas)
+
+    StaticWebsiteBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref StaticWebsiteBucket
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal: "*"
+              Action: "s3:GetObject"
+              Resource: "arn:aws:s3:::standard-cv-frontend/*"
