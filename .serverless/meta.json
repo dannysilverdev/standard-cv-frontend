@@ -148,9 +148,7 @@
           "config": {
             "type": "self"
           },
-          "options": {
-            "confirm": false
-          },
+          "options": {},
           "stage": "dev",
           "dashboard": null,
           "logger": {
@@ -305,9 +303,7 @@
       "client",
       "deploy"
     ],
-    "options": {
-      "confirm": false
-    },
+    "options": {},
     "error": null,
     "params": {},
     "machineId": "73e24993976b220e253e977748e8b2a3",

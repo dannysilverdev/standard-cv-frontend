@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Box, CircularProgress, Typography, Container } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import UserDetailComponent from '../components/UserDetailComponent';
 import { User } from '../types'; // Importar la interfaz desde types.ts
 
@@ -53,8 +53,14 @@ export default function UserDetailPage() {
     const qrUrl = `https://unicv.cl/user/${id}`;
 
     return (
-        <Container maxWidth="md">
+        <Box
+            sx={{
+                width: '100%',
+                px: { xs: 0, sm: 4 },
+                mx: 'auto',
+            }}
+        >
             <UserDetailComponent user={user} qrUrl={qrUrl} />
-        </Container>
+        </Box>
     );
 }
