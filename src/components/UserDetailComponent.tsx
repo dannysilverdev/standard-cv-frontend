@@ -7,7 +7,7 @@ import { QRCodeCanvas } from 'qrcode.react';
 import theme from '../theme';
 import { User } from '../types';
 
-const skills = ['React', 'TypeScript', 'Node.js', 'AWS', 'GraphQL'];
+const skills = ['React', 'TypeScript', 'Node.js', 'AWS', 'DynamoDB'];
 const experience = [
     { company: 'Gty / Banagro', position: 'Full Stack Developer', period: '2022 - 2023', description: 'Desarrollo de aplicaciones web utilizando tecnologías modernas como React, Node.js y AWS.' },
     { company: 'Spm Ingenieros / Codelco', position: 'Full Stack Developer', period: '2020 - 2022', description: 'Implementación de soluciones tecnológicas para la gestión de órdenes de trabajo y mediciones de activos.' },
@@ -17,7 +17,12 @@ const education = [
     { institution: 'Universidad de Aconcagua', degree: 'Ingeniería de ejecución informática', year: '2015' },
 ];
 
-const UserDetailComponent: React.FC = () => {
+interface UserDetailComponentProps {
+    user: User;
+    qrUrl: string;
+}
+
+const UserDetailComponent: React.FC<UserDetailComponentProps> = () => {
     const { id } = useParams<{ id: string }>();
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);

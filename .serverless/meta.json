@@ -1,7 +1,7 @@
 {
   "/home/dannysilver/standard-cv/frontend": {
     "versionSfCore": null,
-    "versionFramework": "4.4.4",
+    "versionFramework": "4.4.5",
     "isWithinCompose": false,
     "isCompose": false,
     "composeOrgName": null,
@@ -310,7 +310,7 @@
     },
     "error": null,
     "params": {},
-    "machineId": "fe64978e05f42597c2de5f6fc446692e",
+    "machineId": "73e24993976b220e253e977748e8b2a3",
     "stage": "dev",
     "accessKeyV2": "<REDACTED>",
     "accessKeyV1": "<REDACTED>",
@@ -333,7 +333,7 @@
     "serviceProviderAwsCredentials": "<REDACTED>",
     "serviceProviderAwsAccountId": "207567761860",
     "projectType": "traditional",
-    "versionSf": "4.4.4",
+    "versionSf": "4.4.5",
     "serviceProviderAwsCfStackName": "standard-cv-frontend-dev",
     "integrations": {},
     "serviceUniqueId": "arn:aws:cloudformation:us-east-1:207567761860:stack/standard-cv-frontend-dev/d7f87390-7c95-11ef-b28b-0e0577c21c8f",
