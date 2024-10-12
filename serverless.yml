@@ -4,18 +4,36 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: us-east-1
+  stage: dev
 
 plugins:
   - serverless-finch
+  - serverless-cloudfront-invalidate
+  - serverless-domain-manager
 
 custom:
+  customDomain:
+    domainName: unicv.cl
+    basePath: ''
+    stage: ${self:provider.stage, 'dev'}
+    createRoute53Record: true
+    endpointType: 'regional'
+    securityPolicy: tls_1_2
+    allowPathMatching: true
+  invalidateCloudfrontCache:
+    paths:
+      - '/*'
   client:
     bucketName: standard-cv-frontend  # Cambia al nombre de tu bucket S3
     distributionFolder: dist  # Carpeta donde Vite genera el build
     region: us-east-1  # Asegúrate de que la región esté definida
     distributionIdKey: EEU042QWEANA9  # Si usas CloudFront
     acl: public-read  # Puedes descomentar si necesitas ACLs
-
+    indexDocument: index.html  # Define index.html como el documento de índice
+    errorDocument: index.html  # Define index.html como el documento de error
+    websiteConfiguration:
+      indexDocument: index.html
+      errorDocument: index.html
 
 resources:
   Resources:
@@ -37,7 +55,7 @@ resources:
             - DomainName: !GetAtt StaticWebsiteBucket.DomainName
               Id: S3-StaticWebsite
               S3OriginConfig:
-                OriginAccessIdentity: ""
+                OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${AWS::Region}"
           Enabled: true
           DefaultRootObject: index.html
           DefaultCacheBehavior:
@@ -53,7 +71,14 @@ resources:
               QueryString: false
               Cookies:
                 Forward: none
-            MinTTL: 3600  # Tiempo mínimo de caché (ajusta si lo necesitas)
+            MinTTL: 300  # Tiempo mínimo de caché (ajusta si lo necesitas)
+          ErrorResponses:
+          - ErrorCode: 404
+            ResponsePagePath: /index.html
+            ResponseCode: 200
+          - ErrorCode: 403
+            ResponsePagePath: /index.html
+            ResponseCode: 200  
 
     StaticWebsiteBucketPolicy:
       Type: AWS::S3::BucketPolicy

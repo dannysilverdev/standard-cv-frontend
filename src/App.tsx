@@ -1,68 +1,141 @@
-// src/App.tsx
-import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Importamos Routes y Route
+import React, { useState } from 'react';
+import { ThemeProvider } from '@mui/material/styles';
+import { CssBaseline, AppBar, Toolbar, Typography, IconButton, Container, Box, Tooltip, Button, Avatar, Menu, MenuItem } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import DescriptionIcon from '@mui/icons-material/Description';
+import AddIcon from '@mui/icons-material/Add';
+import HomeIcon from '@mui/icons-material/Home';
+import theme from './theme';
 import CreateUserForm from './components/CreateUserForm';
-import UserList from './components/UserList'; // Importamos el componente para la lista de usuarios
-//import LoadingSpinner from './components/LoadingSpinner';
-import './index.css';
+import UserListPage from './pages/UserListPage';
+import UserDetailPage from './pages/UserDetailPage';
 
-function App() {
-  const [loading, setLoading] = useState(true); // Estado para manejar la carga
-
-  useEffect(() => {
-    // Simula la carga inicial, por ejemplo, datos de configuración o del usuario
-    setTimeout(() => {
-      setLoading(false); // Cambia el estado después de cargar
-    }, 2000); // Simulación de 2 segundos de carga
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        Loading...
-      </div>
-    );
-  }
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
-    <Router>
-      <Routes>
-        {/* Ruta para crear nuevo usuario */}
-        <Route path="/crear-usuario" element={<CreateUserForm />} />
-
-        {/* Ruta para ver todos los usuarios */}
-        <Route path="/ver-usuarios" element={<UserList />} />
-
-        {/* Ruta por defecto, que muestra la página principal */}
-        <Route
-          path="/"
-          element={
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4 sm:flex-row sm:justify-between">
-              <h1 className="text-2xl font-bold text-center sm:text-4xl">
-                Bienvenido a la aplicación de gestión de usuarios
-              </h1>
-              <div className="mt-4 flex flex-col sm:flex-row sm:space-x-4">
-                <a
-                  href="/crear-usuario"
-                  className="inline-block bg-blue-500 text-white py-2 px-4 rounded mb-2 sm:mb-0"
-                >
-                  Crear un nuevo usuario
-                </a>
-                <a
-                  href="/ver-usuarios"
-                  className="inline-block bg-green-500 text-white py-2 px-4 rounded"
-                >
-                  Ver usuarios
-                </a>
-              </div>
-            </div>
-          }
-        />
-      </Routes>
-    </Router>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none', color: 'black' }}>
+        <Toolbar sx={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 0 }}>
+            UNICV
+          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexGrow: 1, justifyContent: 'flex-end' }}>
+            <Tooltip title="Inicio">
+              <IconButton color="inherit" component={Link} to="/" size="large" sx={{ color: 'black' }}>
+                <HomeIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Ver Currículums">
+              <IconButton color="inherit" component={Link} to="/ver-usuarios" size="large" sx={{ color: 'black' }}>
+                <DescriptionIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Crear Nuevo Currículum">
+              <IconButton color="inherit" component={Link} to="/crear-usuario" size="large" sx={{ color: 'black' }}>
+                <AddIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Opciones de Usuario">
+              <IconButton
+                onClick={handleClick}
+                size="small"
+                sx={{ ml: 2, color: 'black' }}
+                aria-controls={open ? 'account-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+              >
+                <Avatar sx={{ width: 32, height: 32, bgcolor: 'grey.700' }}>U</Avatar>
+              </IconButton>
+            </Tooltip>
+            <Menu
+              anchorEl={anchorEl}
+              id="account-menu"
+              open={open}
+              onClose={handleClose}
+              onClick={handleClose}
+            >
+              <MenuItem onClick={handleClose}>Perfil</MenuItem>
+              <MenuItem onClick={handleClose}>Mi cuenta</MenuItem>
+              <MenuItem onClick={handleClose}>Cerrar sesión</MenuItem>
+            </Menu>
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <Container component="main" maxWidth="lg" sx={{ mt: 4, mb: 4, flexGrow: 1 }}>
+        {children}
+      </Container>
+    </Box>
   );
+};
 
-}
+const Home: React.FC = () => (
+  <Box sx={{
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 'calc(100vh - 128px)'
+  }}>
+    <Typography variant="h4" gutterBottom>
+      Bienvenido a la aplicación de gestión de Currículums
+    </Typography>
+    <Box sx={{
+      display: 'flex',
+      flexDirection: { xs: 'column', sm: 'row' },
+      gap: 2,
+      width: '100%',
+      maxWidth: 'sm',
+      mt: 2
+    }}>
+      <Button
+        fullWidth
+        variant="contained"
+        color="primary"
+        component={Link}
+        to="/crear-usuario"
+        startIcon={<AddIcon />}
+      >
+        Ingresar MiCV
+      </Button>
+      <Button
+        fullWidth
+        variant="contained"
+        color="secondary"
+        component={Link}
+        to="/ver-usuarios"
+        startIcon={<DescriptionIcon />}
+      >
+        Ver CVS
+      </Button>
+    </Box>
+  </Box>
+);
+
+const App: React.FC = () => {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <Layout>
+          <Routes>
+            <Route path="/crear-usuario" element={<CreateUserForm />} />
+            <Route path="/ver-usuarios" element={<UserListPage />} />
+            {/* Ruta para ver los detalles de un usuario */}
+            <Route path="/user/:id" element={<UserDetailPage />} />
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </Layout>
+      </Router>
+    </ThemeProvider>
+  );
+};
 
 export default App;
-

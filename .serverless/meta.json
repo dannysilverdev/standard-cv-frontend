@@ -1,12 +1,167 @@
 {
   "/home/dannysilver/standard-cv/frontend": {
     "versionSfCore": null,
-    "versionFramework": "4.4.3",
+    "versionFramework": "4.4.4",
     "isWithinCompose": false,
     "isCompose": false,
     "composeOrgName": null,
     "composeResolverProviders": {
-      "default-aws-credential-resolver": "<REDACTED>"
+      "default-aws-credential-resolver": "<REDACTED>",
+      "self": {
+        "instance": {
+          "credentials": "<REDACTED>",
+          "serviceConfigFile": {
+            "service": "standard-cv-frontend",
+            "provider": {
+              "name": "aws",
+              "runtime": "nodejs18.x",
+              "region": "us-east-1",
+              "stage": "dev",
+              "versionFunctions": true
+            },
+            "plugins": [
+              "serverless-finch",
+              "serverless-cloudfront-invalidate",
+              "serverless-domain-manager"
+            ],
+            "custom": {
+              "customDomain": {
+                "domainName": "unicv.cl",
+                "basePath": "",
+                "stage": "dev",
+                "createRoute53Record": true,
+                "endpointType": "regional",
+                "securityPolicy": "tls_1_2",
+                "allowPathMatching": true
+              },
+              "invalidateCloudfrontCache": {
+                "paths": [
+                  "/*"
+                ]
+              },
+              "client": {
+                "bucketName": "standard-cv-frontend",
+                "distributionFolder": "dist",
+                "region": "us-east-1",
+                "distributionIdKey": "EEU042QWEANA9",
+                "acl": "public-read",
+                "indexDocument": "index.html",
+                "errorDocument": "index.html",
+                "websiteConfiguration": {
+                  "indexDocument": "index.html",
+                  "errorDocument": "index.html"
+                }
+              }
+            },
+            "resources": {
+              "Resources": {
+                "StaticWebsiteBucket": {
+                  "Type": "AWS::S3::Bucket",
+                  "Properties": {
+                    "BucketName": "standard-cv-frontend",
+                    "PublicAccessBlockConfiguration": {
+                      "BlockPublicAcls": false,
+                      "BlockPublicPolicy": false,
+                      "IgnorePublicAcls": false,
+                      "RestrictPublicBuckets": false
+                    }
+                  }
+                },
+                "CloudFrontDistribution": {
+                  "Type": "AWS::CloudFront::Distribution",
+                  "Properties": {
+                    "DistributionConfig": {
+                      "Origins": [
+                        {
+                          "DomainName": {
+                            "Fn::GetAtt": [
+                              "StaticWebsiteBucket",
+                              "DomainName"
+                            ]
+                          },
+                          "Id": "S3-StaticWebsite",
+                          "S3OriginConfig": {
+                            "OriginAccessIdentity": {
+                              "Fn::Sub": "origin-access-identity/cloudfront/${AWS::Region}"
+                            }
+                          }
+                        }
+                      ],
+                      "Enabled": true,
+                      "DefaultRootObject": "index.html",
+                      "DefaultCacheBehavior": {
+                        "TargetOriginId": "S3-StaticWebsite",
+                        "ViewerProtocolPolicy": "redirect-to-https",
+                        "AllowedMethods": [
+                          "GET",
+                          "HEAD"
+                        ],
+                        "CachedMethods": [
+                          "GET",
+                          "HEAD"
+                        ],
+                        "ForwardedValues": {
+                          "QueryString": false,
+                          "Cookies": {
+                            "Forward": "none"
+                          }
+                        },
+                        "MinTTL": 300
+                      },
+                      "ErrorResponses": [
+                        {
+                          "ErrorCode": 404,
+                          "ResponsePagePath": "/index.html",
+                          "ResponseCode": 200
+                        },
+                        {
+                          "ErrorCode": 403,
+                          "ResponsePagePath": "/index.html",
+                          "ResponseCode": 200
+                        }
+                      ]
+                    }
+                  }
+                },
+                "StaticWebsiteBucketPolicy": {
+                  "Type": "AWS::S3::BucketPolicy",
+                  "Properties": {
+                    "Bucket": {
+                      "Ref": "StaticWebsiteBucket"
+                    },
+                    "PolicyDocument": {
+                      "Statement": [
+                        {
+                          "Effect": "Allow",
+                          "Principal": "*",
+                          "Action": "s3:GetObject",
+                          "Resource": "arn:aws:s3:::standard-cv-frontend/*"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "configFileDirPath": "/home/dannysilver/standard-cv/frontend",
+          "config": {
+            "type": "self"
+          },
+          "options": {
+            "confirm": false
+          },
+          "stage": "dev",
+          "dashboard": null,
+          "logger": {
+            "namespace": "s:core:resolver:self",
+            "prefix": null,
+            "prefixColor": null
+          },
+          "_credentialsPromise": "<REDACTED>"
+        },
+        "resolvers": {}
+      }
     },
     "composeServiceName": null,
     "servicePath": "/home/dannysilver/standard-cv/frontend",
@@ -21,15 +176,37 @@
         "versionFunctions": true
       },
       "plugins": [
-        "serverless-finch"
+        "serverless-finch",
+        "serverless-cloudfront-invalidate",
+        "serverless-domain-manager"
       ],
       "custom": {
+        "customDomain": {
+          "domainName": "unicv.cl",
+          "basePath": "",
+          "stage": "dev",
+          "createRoute53Record": true,
+          "endpointType": "regional",
+          "securityPolicy": "tls_1_2",
+          "allowPathMatching": true
+        },
+        "invalidateCloudfrontCache": {
+          "paths": [
+            "/*"
+          ]
+        },
         "client": {
           "bucketName": "standard-cv-frontend",
           "distributionFolder": "dist",
           "region": "us-east-1",
           "distributionIdKey": "EEU042QWEANA9",
-          "acl": "public-read"
+          "acl": "public-read",
+          "indexDocument": "index.html",
+          "errorDocument": "index.html",
+          "websiteConfiguration": {
+            "indexDocument": "index.html",
+            "errorDocument": "index.html"
+          }
         }
       },
       "resources": {
@@ -60,7 +237,9 @@
                     },
                     "Id": "S3-StaticWebsite",
                     "S3OriginConfig": {
-                      "OriginAccessIdentity": ""
+                      "OriginAccessIdentity": {
+                        "Fn::Sub": "origin-access-identity/cloudfront/${AWS::Region}"
+                      }
                     }
                   }
                 ],
@@ -83,8 +262,20 @@
                       "Forward": "none"
                     }
                   },
-                  "MinTTL": 3600
-                }
+                  "MinTTL": 300
+                },
+                "ErrorResponses": [
+                  {
+                    "ErrorCode": 404,
+                    "ResponsePagePath": "/index.html",
+                    "ResponseCode": 200
+                  },
+                  {
+                    "ErrorCode": 403,
+                    "ResponsePagePath": "/index.html",
+                    "ResponseCode": 200
+                  }
+                ]
               }
             }
           },
@@ -109,7 +300,7 @@
         }
       }
     },
-    "serviceRawFile": "service: standard-cv-frontend\n\nprovider:\n  name: aws\n  runtime: nodejs18.x\n  region: us-east-1\n\nplugins:\n  - serverless-finch\n\ncustom:\n  client:\n    bucketName: standard-cv-frontend  # Cambia al nombre de tu bucket S3\n    distributionFolder: dist  # Carpeta donde Vite genera el build\n    region: us-east-1  # Asegúrate de que la región esté definida\n    distributionIdKey: EEU042QWEANA9  # Si usas CloudFront\n    acl: public-read  # Puedes descomentar si necesitas ACLs\n\n\nresources:\n  Resources:\n    StaticWebsiteBucket:\n      Type: AWS::S3::Bucket\n      Properties:\n        BucketName: standard-cv-frontend\n        PublicAccessBlockConfiguration:\n          BlockPublicAcls: false\n          BlockPublicPolicy: false\n          IgnorePublicAcls: false\n          RestrictPublicBuckets: false\n\n    CloudFrontDistribution:\n      Type: AWS::CloudFront::Distribution\n      Properties:\n        DistributionConfig:\n          Origins:\n            - DomainName: !GetAtt StaticWebsiteBucket.DomainName\n              Id: S3-StaticWebsite\n              S3OriginConfig:\n                OriginAccessIdentity: \"\"\n          Enabled: true\n          DefaultRootObject: index.html\n          DefaultCacheBehavior:\n            TargetOriginId: S3-StaticWebsite\n            ViewerProtocolPolicy: redirect-to-https\n            AllowedMethods:\n              - GET\n              - HEAD\n            CachedMethods:\n              - GET\n              - HEAD\n            ForwardedValues:\n              QueryString: false\n              Cookies:\n                Forward: none\n            MinTTL: 3600  # Tiempo mínimo de caché (ajusta si lo necesitas)\n\n    StaticWebsiteBucketPolicy:\n      Type: AWS::S3::BucketPolicy\n      Properties:\n        Bucket: !Ref StaticWebsiteBucket\n        PolicyDocument:\n          Statement:\n            - Effect: Allow\n              Principal: \"*\"\n              Action: \"s3:GetObject\"\n              Resource: \"arn:aws:s3:::standard-cv-frontend/*\"",
+    "serviceRawFile": "service: standard-cv-frontend\n\nprovider:\n  name: aws\n  runtime: nodejs18.x\n  region: us-east-1\n  stage: dev\n\nplugins:\n  - serverless-finch\n  - serverless-cloudfront-invalidate\n  - serverless-domain-manager\n\ncustom:\n  customDomain:\n    domainName: unicv.cl\n    basePath: ''\n    stage: ${self:provider.stage, 'dev'}\n    createRoute53Record: true\n    endpointType: 'regional'\n    securityPolicy: tls_1_2\n    allowPathMatching: true\n  invalidateCloudfrontCache:\n    paths:\n      - '/*'\n  client:\n    bucketName: standard-cv-frontend  # Cambia al nombre de tu bucket S3\n    distributionFolder: dist  # Carpeta donde Vite genera el build\n    region: us-east-1  # Asegúrate de que la región esté definida\n    distributionIdKey: EEU042QWEANA9  # Si usas CloudFront\n    acl: public-read  # Puedes descomentar si necesitas ACLs\n    indexDocument: index.html  # Define index.html como el documento de índice\n    errorDocument: index.html  # Define index.html como el documento de error\n    websiteConfiguration:\n      indexDocument: index.html\n      errorDocument: index.html\n\nresources:\n  Resources:\n    StaticWebsiteBucket:\n      Type: AWS::S3::Bucket\n      Properties:\n        BucketName: standard-cv-frontend\n        PublicAccessBlockConfiguration:\n          BlockPublicAcls: false\n          BlockPublicPolicy: false\n          IgnorePublicAcls: false\n          RestrictPublicBuckets: false\n\n    CloudFrontDistribution:\n      Type: AWS::CloudFront::Distribution\n      Properties:\n        DistributionConfig:\n          Origins:\n            - DomainName: !GetAtt StaticWebsiteBucket.DomainName\n              Id: S3-StaticWebsite\n              S3OriginConfig:\n                OriginAccessIdentity: !Sub \"origin-access-identity/cloudfront/${AWS::Region}\"\n          Enabled: true\n          DefaultRootObject: index.html\n          DefaultCacheBehavior:\n            TargetOriginId: S3-StaticWebsite\n            ViewerProtocolPolicy: redirect-to-https\n            AllowedMethods:\n              - GET\n              - HEAD\n            CachedMethods:\n              - GET\n              - HEAD\n            ForwardedValues:\n              QueryString: false\n              Cookies:\n                Forward: none\n            MinTTL: 300  # Tiempo mínimo de caché (ajusta si lo necesitas)\n          ErrorResponses:\n          - ErrorCode: 404\n            ResponsePagePath: /index.html\n            ResponseCode: 200\n          - ErrorCode: 403\n            ResponsePagePath: /index.html\n            ResponseCode: 200  \n\n    StaticWebsiteBucketPolicy:\n      Type: AWS::S3::BucketPolicy\n      Properties:\n        Bucket: !Ref StaticWebsiteBucket\n        PolicyDocument:\n          Statement:\n            - Effect: Allow\n              Principal: \"*\"\n              Action: \"s3:GetObject\"\n              Resource: \"arn:aws:s3:::standard-cv-frontend/*\"",
     "command": [
       "client",
       "deploy"
@@ -119,7 +310,7 @@
     },
     "error": null,
     "params": {},
-    "machineId": "5c7da72b364f8d36e169624a142f4d67",
+    "machineId": "fe64978e05f42597c2de5f6fc446692e",
     "stage": "dev",
     "accessKeyV2": "<REDACTED>",
     "accessKeyV1": "<REDACTED>",
@@ -142,13 +333,13 @@
     "serviceProviderAwsCredentials": "<REDACTED>",
     "serviceProviderAwsAccountId": "207567761860",
     "projectType": "traditional",
-    "versionSf": "4.4.3",
+    "versionSf": "4.4.4",
     "serviceProviderAwsCfStackName": "standard-cv-frontend-dev",
     "integrations": {},
     "serviceUniqueId": "arn:aws:cloudformation:us-east-1:207567761860:stack/standard-cv-frontend-dev/d7f87390-7c95-11ef-b28b-0e0577c21c8f",
     "serviceProviderAwsCfStackId": "arn:aws:cloudformation:us-east-1:207567761860:stack/standard-cv-frontend-dev/d7f87390-7c95-11ef-b28b-0e0577c21c8f",
     "serviceProviderAwsCfStackCreated": "2024-09-27T06:00:48.937Z",
-    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackUpdated": "2024-10-01T04:01:04.709Z",
     "serviceProviderAwsCfStackStatus": "CREATE_COMPLETE",
     "serviceProviderAwsCfStackOutputs": [
       {
