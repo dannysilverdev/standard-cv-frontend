@@ -14,7 +14,7 @@ export default function UserDetailPage() {
 
     useEffect(() => {
         axios
-            .get(`https://y97r7zl8m2.execute-api.us-east-1.amazonaws.com/dev/user/${id}`)
+            .get(`https://aze9bicwjf.execute-api.us-east-1.amazonaws.com/dev/user/${id}`)
             .then((response) => {
                 setUser(response.data);
                 setLoading(false);

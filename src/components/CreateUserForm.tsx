@@ -25,7 +25,7 @@ const CreateUserForm: React.FC = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         axios
-            .post('https://y97r7zl8m2.execute-api.us-east-1.amazonaws.com/dev/user', formData)
+            .post('https://aze9bicwjf.execute-api.us-east-1.amazonaws.com/dev/user', formData)
             .then((response) => {
                 console.log('Usuario creado:', response.data);
                 setSnackbarMessage('Usuario creado exitosamente');

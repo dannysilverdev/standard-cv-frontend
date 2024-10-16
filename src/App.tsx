@@ -9,6 +9,7 @@ import theme from './theme';
 import CreateUserForm from './components/CreateUserForm';
 import UserListPage from './pages/UserListPage';
 import UserDetailPage from './pages/UserDetailPage';
+import Login from './components/Login';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -130,6 +131,8 @@ const App: React.FC = () => {
             <Route path="/ver-usuarios" element={<UserListPage />} />
             {/* Ruta para ver los detalles de un usuario */}
             <Route path="/user/:id" element={<UserDetailPage />} />
+            {/* Ruta para el inicio de sesión */}
+            <Route path="/login" element={<Login />} />
             <Route path="/" element={<Home />} />
           </Routes>
         </Layout>

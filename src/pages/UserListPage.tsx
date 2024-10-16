@@ -15,7 +15,7 @@ const UserListPage: React.FC = () => {
 
     useEffect(() => {
         axios
-            .get<User[]>('https://y97r7zl8m2.execute-api.us-east-1.amazonaws.com/dev/users')
+            .get<User[]>('https://aze9bicwjf.execute-api.us-east-1.amazonaws.com/dev/users')
             .then((response) => {
                 setUsers(response.data);
                 setLoading(false);
@@ -30,7 +30,7 @@ const UserListPage: React.FC = () => {
     const handleDelete = (userId: string) => {
         const idToDelete = userId.replace('USER#', '');
         axios
-            .delete(`https://y97r7zl8m2.execute-api.us-east-1.amazonaws.com/dev/user/${idToDelete}`)
+            .delete(`https://aze9bicwjf.execute-api.us-east-1.amazonaws.com/dev/user/${idToDelete}`)
             .then(() => {
                 setUsers(users.filter((user) => user.PK !== userId));
                 setSnackbarMessage('Usuario eliminado exitosamente');
